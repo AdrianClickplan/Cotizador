@@ -1,0 +1,638 @@
+<!--
+  templateType: quote
+  isAvailableForNewContent: true
+  label: Basic - Inmobilia
+  screenshotPath: ../images/basic.png
+-->
+
+{% extends './layouts/base.html' %}
+{% from '/Plantilla cotizaciones EDITABLE/imports/mock_data.html' import SAMPLE_TEMPLATE_DATA as mock_data %}
+{% set QUOTE = template_data.quote or mock_data.quote %}
+{% set BUYER_CONTACTS = QUOTE.associated_objects.contacts %}
+
+{% set LINE_ITEMS = ASSOCIATED_OBJECTS.line_items_by_start_date ? ASSOCIATED_OBJECTS.line_items_by_start_date.PRESENT : ASSOCIATED_OBJECTS.line_items %}
+
+
+{% block stylesheet %}
+  {{ require_css(get_asset_url("../css/basic_inmobilia.css")) }}
+{% endblock stylesheet %}
+
+{% block body %}
+{% set prodcut_name = LINE_ITEMS[0].name %}
+
+{% require_css %}
+  <style>
+    {% if module_data|attr('buyer_company')|attr('hidden') &&
+      module_data|attr('buyer_contacts')|attr('hidden') &&
+      module_data|attr('reference')|attr('hidden') &&
+      module_data|attr('quote_created')|attr('hidden') &&
+      module_data|attr('quote_expires')|attr('hidden') &&
+      module_data|attr('sender_company')|attr('hidden') &&
+      module_data|attr('sender_contact')|attr('hidden')
+    %}
+      .hs-quotes--basic .letterhead { display: none; }
+    {% endif %}
+
+    {% if !QUOTE.hs_payment_enabled %}
+      .hs-quotes--basic .line-items__payment { display: none; }
+    {% endif %}
+
+    {% if module_data|attr('payment-schedule')|attr('hidden') || !ASSOCIATED_OBJECTS.payment_schedule %}
+      .hs-quotes .payment-schedule { display: none; }
+    {% endif %}
+  </style>
+{% end_require_css %}
+
+<body class="hs-quotes hs-quotes--basic">
+  <div class="logo">
+    {% module "logo" path="../modules/quote_logo" %}
+  </div>
+  
+
+{# aquí ira la imagen editable HEADER #}
+ {% module "module_16976692348754" path="/Plantilla cotizaciones EDITABLE/modules/header_image", label="Portada cotización"  %}
+
+    <div class="body-cot">
+      <div class="col-1">
+        <div class="content">
+          <div class="info">
+            <div class="cliente-container">
+                <div class="cliente-info">
+                    Cliente
+                    {% for recipient in BUYER_CONTACTS %}
+                    <br>
+                    <b>{{ format_name(recipient.firstname, recipient.lastname, true) }}</b>
+                    {% endfor %}
+                </div>
+                <div class="producto-info">
+                    <span class="producto-label">Producto:</span>
+                    <span class="producto-details">
+                      {{prodcut_name}}
+                        {# module "Producto"
+                        label="Producto"
+                        path="@hubspot/rich_text"
+                        html={{
+                        'AMA-A-10'
+                        }}
+                        #}
+                    </span>
+                </div>
+            </div>
+            
+            <div class="email-container">
+                <div class="email-info">
+                    Email:
+                    {% for recipient in BUYER_CONTACTS %}
+                    <br>
+                    {{ recipient.email }}
+                    {% endfor %}
+                    {# module "buyer_company" path="../modules/buyer_company" #}
+                    {# module "buyer_contacts" path="../modules/buyer_contacts" #}
+                </div>
+                <div class="top-total-info">
+                    <span class="top-total-label">
+                        {% module "top_total" path="../modules/minimal_top_total" %}
+                    </span>
+                </div>
+            </div>
+            
+          </div> 
+          {#
+          <div class="custom-container">
+            <!-- Contenido aquí -->
+          </div>
+          #}
+        </div>
+
+        <div class="main-container">
+            <div class="inner-container">
+              <!--
+    <div class="payment-schedule">
+                     {% module "module_169861485652810" path="/Plantilla cotizaciones EDITABLE/modules/quote_payment_schedule_ESTUDIAR", label="Desgloce (no se muetra | ignorar)" %}
+
+      {% module "line_items_table"
+      path="/Plantilla cotizaciones EDITABLE/modules/line_items_table EDITABLE"
+      display_heading="false"
+      line_item_column=[
+        {
+          "column_title": template_translations.products_and_services.message,
+          "column_property": "name"
+        },
+        {
+          "column_title": template_translations.quantity.message,
+          "column_property": "quantity"
+        },
+        {
+          "column_title": template_translations.price.message,
+          "column_property": "amount"
+        }
+      ]
+      subtotal_title={{ template_translations.subtotal_table_title.message }}
+      display_subtotal_title={{ true }}
+      other_fees_title={{ template_translations.other_fees.message }}
+    %}
+                             {% module "payment-schedule" path="@hubspot/quote_payment_schedule" %}
+    </div>
+    -->
+                {% module "module_16982499619582" path="/Plantilla cotizaciones EDITABLE/modules/quote_auto_fillable_table_by_product_price", label="Desglose" %}
+            </div>
+        </div>
+        <div class="image-container">
+            <div class="image-wrapper">
+                <!-- Contenido omitido por brevedad -->
+                {% module "module_169767170365046" path="/Plantilla cotizaciones EDITABLE/modules/quote_image", label="Planos" %}
+            </div>
+            <div class="image-wrapper">
+                <!-- Contenido omitido por brevedad -->
+                {% module "module_169767170365045" path="/Plantilla cotizaciones EDITABLE/modules/quote_image", label="Call to action" %}
+            </div>
+        </div>
+    </div>
+        <div class="divisor">
+            <div class="line-container">
+                <div class="line"></div>
+            </div>
+        </div>
+        <div class="col-2">
+            <div class="container">
+                <div class="section">
+                    <div class="title-section">Key Features</div>
+                </div>
+                <div class="feature-images">
+                    <div class="feature-image">
+                        {% module "module_169767170365040" path="/Plantilla cotizaciones EDITABLE/modules/quote_image", label="Logo amenidades" %}
+                    </div>
+                </div>
+                <div class="feature-details">
+                    {% module "module_169767170365041" path="/Plantilla cotizaciones EDITABLE/modules/quote_image", label="Amenidad lateral 1" %}
+                    {% module "module_169767170365042" path="/Plantilla cotizaciones EDITABLE/modules/quote_image", label="Amenidad lateral 2" %}
+                    {% module "module_169767170365043" path="/Plantilla cotizaciones EDITABLE/modules/quote_image", label="Amenidad lateral 3" %}
+                    {% module "module_169767170365044" path="/Plantilla cotizaciones EDITABLE/modules/quote_image", label="Amenidad lateral 4" %}
+                </div>
+            </div>
+        </div>
+        
+    </div>
+<!-- Botones de descarga -->
+<div class="download-buttons">
+    <div class="buttons-container">
+        {% module "Download PDF" path="/Plantilla cotizaciones EDITABLE/modules/quote_download copia", label="quote_download_pdf" %}
+        <div class="share-button">
+            <div class="button-content">Compartir</div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <div class="logo-container">
+        {% module "logo" path="../modules/quote_logo" %}
+    </div>
+    {#
+    <div class="legal-notice">
+        El aviso legal sirve para identificar al propietario de un sitio web. Recoge toda aquella información que la Ley de Servicios de la Sociedad de Información y el Comercio Electrónico (LSSI-CE) obliga a incluir a las webs.
+    </div>
+    #}
+</div>
+
+  {#
+  <section class="letterhead">
+    <div>
+      {% module "buyer_company" path="../modules/buyer_company" %}
+      {% module "buyer_contacts" path="../modules/buyer_contacts" %}
+      {% module "reference" path="../modules/reference" %}
+      {% module "quote_created" path="../modules/quote_created" %}
+      {% module "quote_expires" path="../modules/quote_expires" %}
+    </div>
+    <div>
+      <div class="sender-company_wrapper">
+        {% module "sender_company"
+          label="Sender company"
+          path="@hubspot/rich_text"
+          html="
+            <b>{{ personalization_token('template_data.quote.hs_sender_company_name', '') }}</b><br>
+            {{ personalization_token('template_data.quote.hs_sender_company_address', '') }}<br>
+            {{ personalization_token('template_data.quote.hs_sender_company_address2', '') }}<br>
+            {{ personalization_token('template_data.quote.hs_sender_company_city', '')}}, {{ personalization_token('template_data.quote.hs_sender_company_state', '')}} {{ personalization_token('template_data.quote.hs_sender_company_zip', '') }}<br>
+            {{ personalization_token('template_data.quote.hs_sender_company_country', '') }}<br>
+          "
+        %}
+      </div>
+      <br>
+      {% module "sender_contact"
+        label="Sender contact"
+        path="@hubspot/rich_text"
+        html={{
+          "<b>" ~ template_translations.prepared_by.message ~ " " ~ ptoken_sender_full_name ~ "</b>" ~
+          "<br>" ~
+          ptoken_sender_title ~
+          "<br>" ~
+          ptoken_sender_email ~
+          "<br>" ~
+          ptoken_sender_phone
+        }}
+      %}
+    </div>
+  </section>
+
+
+
+  <section aria-label="line-items">
+    {% module "line_items_table"
+      path="../modules/line_items_table"
+      display_heading="false"
+      line_item_column=[
+        {
+          "column_title": template_translations.products_and_services.message,
+          "column_property": "name"
+        },
+        {
+          "column_title": template_translations.quantity.message,
+          "column_property": "quantity"
+        },
+        {
+          "column_title": template_translations.price.message,
+          "column_property": "amount"
+        }
+      ]
+      subtotal_title={{ template_translations.subtotal_table_title.message }}
+      display_subtotal_title={{ true }}
+      other_fees_title={{ template_translations.other_fees.message }}
+    %}
+
+    <div class="line-items__payment">
+      {% module "payment" path="@hubspot/quote_payment" %}
+    </div>
+
+  </section>
+
+
+
+  <section class="signature">
+    {% module "signature" path="@hubspot/quote_signature" %}
+  </section>
+#}
+  <section>
+    {# module "download" path="@hubspot/quote_download" #}
+  </section>
+<style>
+  @media(max-width:764px){
+    .header img{
+      object-fit:contain;
+    }
+    .body-cot{
+      flex-wrap:wrap;
+    }
+    .divisor{
+      display:none;
+    }
+    .image-wrapper{
+      padding-left:0 !important;
+    }
+    .download-buttons{
+      padding-left:0!important;
+      padding-right:0!important;
+    }
+  }
+  .col-1>.content {
+    width: 100%;
+    height: fit-content;
+    padding-bottom: 24px;
+    padding-left: 27px;
+    padding-right: 91px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 32px;
+    display: inline-flex;
+}
+.col-1>.content>.info{
+    justify-content: flex-start; align-items: start; gap: 53px; display: inline-flex;
+}
+/* Estilos para el contenedor principal */
+.cliente-container {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 8px;
+    display: inline-flex;
+}
+
+/* Estilos para la información del cliente */
+.cliente-info {
+    color: black;
+    font-size: 9px;
+    font-family: Helvetica;
+    font-weight: 700;
+    word-wrap: break-word;
+}
+
+/* Estilos para la etiqueta del producto */
+.producto-label {
+    color: black;
+    font-size: 9px;
+    font-family: Helvetica;
+    font-weight: 700;
+    word-wrap: break-word;
+}
+
+/* Estilos para los detalles del producto */
+.producto-details {
+    color: black;
+    font-size: 9px;
+    font-family: Helvetica;
+    font-weight: 400;
+    word-wrap: break-word;
+}
+/* Estilos para el contenedor principal del email y top total */
+.email-container {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 8px;
+    display: inline-flex;
+}
+
+/* Estilos para la información del email */
+.email-info {
+    color: black;
+    font-size: 9px;
+    font-family: Helvetica;
+    font-weight: 700;
+    word-wrap: break-word;
+}
+
+/* Estilos para la etiqueta de top total */
+.top-total-label {
+    color: black;
+    font-size: 9px;
+    font-family: Helvetica;
+    font-weight: 400;
+    word-wrap: break-word;
+}
+
+/* Estilos para la información de top total */
+.top-total-info {
+    display: flex;
+    gap: 0.25rem;
+}
+/* Estilos para el contenedor personalizado */
+.custom-container {
+    padding-right: 44px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
+    display: flex;
+}
+/* Estilos para el contenedor principal */
+.main-container {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 24px;
+    padding-left: 27px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 19px;
+    display: inline-flex;
+}
+
+/* Estilos para el contenedor interno */
+.inner-container {
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 60px;
+    display: inline-flex;
+}
+/* Estilos para el contenedor de imágenes */
+.image-container {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 24px;
+    gap:10px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    display: inline-flex;
+}
+
+/* Estilos para el contenedor de cada imagen */
+.image-wrapper {
+    width: 100%;
+    height: 100%;
+    padding-left: 27px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    display: inline-flex;
+}
+
+/* Estilos para el divisor */
+.divisor {
+padding:0px 18px;
+}
+
+/* Estilos para la línea divisor */
+.line-container {
+    width: 1px;
+    height: 728px;
+    background: #828282;
+    border-radius: 0.50px;
+}
+/* Estilos para la columna 2 */
+.col-2 {
+    
+    height: 100%;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    display: inline-flex;
+}
+
+/* Estilos para el contenedor principal */
+.container {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    display: inline-flex;
+}
+
+/* Estilos para la sección del título */
+.section {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    padding-top: 10px;
+    padding-bottom: 24px;
+    padding-left: 50px;
+    padding-right: 62px;
+    gap: 10px;
+}
+
+/* Estilos para el título */
+.title-section {
+    color: black;
+    font-size: 14px;
+    font-family: Helvetica;
+    font-weight: 700;
+    word-wrap: break-word;
+}
+
+/* Estilos para las imágenes de características */
+.feature-images {
+    padding-bottom: 33px;
+    padding-left: 37px;
+    padding-right: 53px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    display: flex;
+}
+
+/* Estilos para una imagen de característica */
+.feature-image {
+    width: 111px;
+    height: 31.71px;
+    position: relative;
+}
+
+/* Estilos para las imágenes detalladas de características */
+.feature-details {
+    width: 200.89px;
+    padding-bottom: 54px;
+    padding-left: 14px;
+    padding-right: 27px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 38px;
+    display: flex;
+}
+/* Estilos para los botones de descarga */
+.download-buttons {
+    width: 100%;
+    height: 100%;
+    padding-top: 10px;
+    padding-bottom: 45px;
+    padding-left: 77px;
+    padding-right: 280px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    display: inline-flex;
+}
+
+/* Estilos para el contenedor de botones */
+.buttons-container {
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 18px;
+    display: inline-flex;
+}
+
+/* Estilos para el botón de compartir */
+.share-button {
+    padding-left: 32px;
+    padding-right: 32px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 24px;
+    border: 1px #13244F solid;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    display: flex;
+}
+
+/* Estilos para el contenido del botón */
+.button-content {
+    color: #13244F;
+    font-size: 12px;
+    font-family: Helvetica;
+    font-weight: 400;
+    word-wrap: break-word;
+}
+
+/* Estilos para el footer */
+.footer {
+    width: 100%;
+    height: 100%;
+    padding-top: 15px;
+    padding-bottom: 42px;
+    padding-left: 119px;
+    padding-right: 119px;
+    background: #F8FAFF;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 13px;
+    display: inline-flex;
+}
+
+/* Estilos para el contenedor del logo */
+.logo-container {
+    width: fit-content;
+    height: fit-content;
+    position: relative;
+}
+@media print {
+  .download-buttons{
+    display:none;
+  }
+    body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+  .header-to-print>img{
+    object-fit:cover;
+  }
+    /* Ajustes generales */
+    .col-1 > .content,
+    .col-1 > .content > .info,
+    .email-container,
+    .top-total-info,
+    .custom-container,
+    .main-container,
+    .inner-container{
+        width: auto;
+        height: auto;
+        padding: 0;
+        margin: 0;
+    }
+  .divisor {
+    padding: 0px 18px;
+  }
+  .line-container {
+    width: 1px;
+    height: 728px;
+    background: #828282;
+    border-radius: 0.5px;
+  }
+  .main-container{
+    padding-top:27px!important;
+  }
+  .image-container{
+    padding-top:27px;
+  }
+  .cliente-info,.producto-details,.quote-total>.text,.quote-total,.email-info{
+    font-size: 12px;
+}
+    .footer{
+    width:100%;
+    height: auto;
+    padding:0;
+    margin:0;
+      background:#F8FAFF;
+  }
+    /* Otros ajustes necesarios para la impresión */
+    /* ... (otras reglas de estilo para impresión) ... */
+}
+  </style>
+</body>
+{% endblock body %}

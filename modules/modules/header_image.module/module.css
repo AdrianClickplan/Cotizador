@@ -1,0 +1,5 @@
+@media print{
+  .header-to-print{
+    width:100%;
+  }
+}

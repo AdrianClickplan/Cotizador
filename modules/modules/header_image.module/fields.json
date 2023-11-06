@@ -1,0 +1,24 @@
+[ {
+  "id" : "70aa6afa-38f9-cd7d-dc7c-c05ad83b4f3b",
+  "name" : "image_field",
+  "display_width" : null,
+  "label" : "Imagen",
+  "required" : false,
+  "locked" : false,
+  "responsive_enabled" : false,
+  "breakpoint_defaults" : { },
+  "responsive" : true,
+  "resizable" : true,
+  "show_loading" : false,
+  "type" : "image",
+  "default" : {
+    "size_type" : "exact",
+    "src" : "https://info.clickplan.mx/hubfs/header.png",
+    "alt" : "header",
+    "loading" : "lazy",
+    "width" : 611,
+    "height" : 430,
+    "max_width" : 1944,
+    "max_height" : 1368
+  }
+} ]
